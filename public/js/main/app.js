@@ -123,10 +123,11 @@ app.controller("projectController", ['$scope', 'svProject', function ($scope, sv
         if (retVal == true) {
             svTodos.delete(todo._id).then(function (data) {
                 $scope.todos = data.data;
-                $scope.loading = false;
+                
             })
             alert('xóa thành công');
         }
+        $scope.loading = false;
     }
 }]).filter('pagination', function() {
     return function(data, start) {
