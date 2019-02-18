@@ -5,6 +5,30 @@
 <title>Node/Angular Todos</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+
+<!-- Main Angular Files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-route.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-animate.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.js"></script>
+
+    <!-- Cascade Style Sheets -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+
+
+
+
+
+
 <!--load cdn styles-->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -15,7 +39,10 @@
 <!--load cdn scripts-->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.9.0/js/xeditable.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!--include css-->
 <link rel="stylesheet"  href="assets/css/style.css">
 <!--load app-->
@@ -26,16 +53,12 @@
 </head>
 <body ng-controller='projectController'>
 
-<div class="sidebar">
-<a class="active" href="http://127.0.0.1:3000/index1">project Đã tạo</a>
-<a href="#contact">Project đã tham gia</a>
-<a href="#about">Thông tin cá nhân</a>
-<a href="#about">Chat nhóm</a>
-<a href="#about">Thống kê</a>
+
+
 </div>
 
-<div class="content">
-<br><br><br>
+</div>
+
 <h2>QUẢN LÝ DỰ ÁN</h2><br><br><br>
 
 <p class="text-center" ng-show="loading">
@@ -53,10 +76,8 @@ Thêm mới dự án
 </form>
 <hr>
 CÁC DỰ ÁN ĐÃ TẠO: <h1>{{todos.length}}</h1>
-<div class="container">
-<div class="row">
 
-<div class="col-md-4"  ng-repeat="todo in todos | pagination: (currentPage - 1) * pageSize | limitTo: pageSize">
+ <div  ng-repeat="todo in todos | pagination: (currentPage - 1) * pageSize | limitTo: pageSize">
     <i class="fa fa-book fa-5x"></i><br><a href="http://127.0.0.1:3000/index2?_idProject={{todo._id}}"><h5>{{todo.name}}</h5></a>   
     <a href ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible" ><i class="fa fa-edit"></i></a>
     <span  editable-text="todo.name" e-form="textBtnForm" onaftersave="updateTodo(todo)"></span>
@@ -68,22 +89,23 @@ CÁC DỰ ÁN ĐÃ TẠO: <h1>{{todos.length}}</h1>
     <span  editable-text="todo.describe" e-form="textBtnForm1" onaftersave="updateTodo(todo)"></span>
     <br>
     Ngày tạo:<h6>{{todo.timeCreate}}</h6>
-</div>
+</div> <br>
 
-
-
-<ul uib-pagination total-items="todos.length" items-per-page="pageSize " ng-model="currentPage "></ul>
-
-
-</div>
-<br>
-
-</div>
+<div class='row'>
+  <ul uib-pagination total-items="todos.length" items-per-page="pageSize " ng-model="currentPage "></ul>  
 
 </div>
 
 
-</body>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </body>
+
 </html>
 <!--css-->
 <style>
@@ -142,6 +164,8 @@ float: none;
 }
 }
 </style>
+
+
 
 
 

@@ -1,12 +1,14 @@
-var app = angular.module("app.todos", ["xeditable"]);
-     
+
+var app = angular.module("app.todos", ["xeditable",'ui.bootstrap','appRoutes']);
+          angular.module('appRoutes', ['ngRoute']);     
 
 app.controller("todoController", ['$scope', 'svTodos', function ($scope, svTodos) {
-    $scope.appName = "Work Day Organizer -";
+   
+    $scope.appName = 444;
     $scope.formData = {};
     $scope.loading = true;
-    $scope.pageSize = 3;
-    $scope.currentPage = 1;
+  
+
 
     $scope.todos = [];
 
@@ -58,7 +60,7 @@ app.controller("todoController", ['$scope', 'svTodos', function ($scope, svTodos
 
         })
     }
-}]);
+}])
 //////////////////////////////
 //test cho project
 
@@ -66,7 +68,8 @@ app.controller("projectController", ['$scope', 'svProject', function ($scope, sv
     $scope.appName = "Work Day Organizer -";
     $scope.formData = {};
     $scope.loading = true;
-
+    $scope.pageSize = 3;
+    $scope.currentPage = 1;
     $scope.todos = [];
 
     //load data from api
