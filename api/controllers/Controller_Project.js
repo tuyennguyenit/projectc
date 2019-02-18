@@ -91,6 +91,60 @@ module.exports = function (app) {
     });
 
 
+    /**
+     * phan trang
+     */
 
+    app.post('/phantrang', function(req, res, next) {
+
+        // console.log(req.body);
+    
+        if(req.body.select!='undefined'){
+            var sort=req.body.select;
+        }
+    
+        var perPage = 2
+        var page = req.body.page || 1
+    
+        var search = req.body.search;
+        // console.log(req.body.search);
+        // console.log(req.body.search_field);
+    
+        if (req.body.search!=undefined && req.body.search_field!=undefined && req.body.search!='' && req.body.search_field!='') {
+          
+            var search = req.body.search;
+            var search_field = req.body.search_field;
+            var query = { 'search' : search_field };
+    
+            if (search == 'name') {
+                var query = { name : search_field };
+            }else if (search == 'timeCreate') {
+                var query = { timeCreate : search_field };
+            }else if (search == 'describe') {
+                var query = { describe : search_field };
+            }else{
+                var query = { id : search_field };
+            }
+            console.log(query);
+        }else{
+            var query = { 'name': { $ne: null } };
+            console.log(query)
+        }
+        
+        User.find(query).skip((perPage * page) - perPage).limit(perPage).sort(sort)
+        .exec(function(err, user) {
+                User.count(query).exec(function(err, count) {
+                    if (err) return next(err)
+                    res.render('user', {
+                        user: user,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                        sort:sort,
+                        search:search,
+                        moment:moment
+                    })
+                })
+            })
+    })
 
 }

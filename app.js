@@ -78,6 +78,11 @@ app.get('/index1',function(req,res){
     res.render("index1.ejs");
 });
 
+app.get('/index2',function(req,res){
+    res.render("index2.ejs");
+});
+
+
 app.get('/hi',function(req,res){
     res.send("<font color=red> trang 2</font>")
 })

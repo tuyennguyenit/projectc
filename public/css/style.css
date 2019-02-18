@@ -1,18 +1,21 @@
-html{
+html {
     overflow-y: scroll;
-   
-}
-body{
-    margin-top: 30px;
-   
+
 }
 
-#todo-list{
-    margin-bottom:30px; 
+body {
+    margin-top: 30px;
+
 }
-#todo-form{
+
+#todo-list {
+    margin-bottom: 30px;
+}
+
+#todo-form {
     margin-bottom: 50px;
 }
-.strike{
+
+.strike {
     text-decoration: line-through;
 }
