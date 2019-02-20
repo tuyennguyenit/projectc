@@ -68,7 +68,7 @@ app.controller("projectController", ['$scope', 'svProject', function ($scope, sv
     $scope.appName = "Work Day Organizer -";
     $scope.formData = {};
     $scope.loading = true;
-    $scope.pageSize = 3;
+    $scope.pageSize = 1;
     $scope.currentPage = 1;
     $scope.todos = [];
 

@@ -1,5 +1,7 @@
+
 var mongoose=require("mongoose");
 var Schema =mongoose.Schema;
+
 var todoSchema= new Schema({
     name:String,
     timeCreate:String,
@@ -7,6 +9,7 @@ var todoSchema= new Schema({
     _idCreator:String,
     
 });
+
 var Todos= mongoose.model("project",todoSchema);
 
 module.exports=Todos;
