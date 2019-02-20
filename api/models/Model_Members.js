@@ -1,6 +1,7 @@
 var mongoose=require("mongoose");
 var Schema=mongoose.Schema;
 var todoSchema= new Schema({
+   _id:Schema.Types.ObjectId,
    name:String,
    companyName:String,
    dateOfBirth:String,

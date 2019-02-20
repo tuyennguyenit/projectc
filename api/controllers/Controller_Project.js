@@ -249,24 +249,29 @@ module.exports = function (app) {
     
     //truy vấn đặt biệt
     
-    //tìm tất cả các project có name là ...
-     app.get("/api/ProjectTim/:name", function (req, res) {
+    //tìm tất cả các project có name là chỉ cần có 1 là ok
+     app.get("/api/ProjectTim0/:name", function (req, res) {
+        var m=req.params.name;
+          
+        //RegExp(m)=>like '%a%'    
         Projects.find({
-            name: req.params.name
+           'name': new RegExp(m)
         }, function (err, Project) {
             if (err) {
                 throw err;
             } else {
-                if(Project===null){
+                if(Project.length>0){
                    res.json(Project);
                 } else{
                    console.log('No records');
                    return res.status(500).json(err);
                 }
             }
+        }).count(function(err,count){
+            console.log(count) // đếm số lượng bảng ghi
         })
     });
 
-     //tìm tất cả các project có ten
+    
 
 }

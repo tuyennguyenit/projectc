@@ -1,3 +1,5 @@
+/*
+
 
 var mongoose=require("mongoose");
 var Schema =mongoose.Schema;
@@ -7,6 +9,25 @@ var todoSchema= new Schema({
     timeCreate:String,
     describe:String,
     _idCreator:String,
+    
+});
+
+var Todos= mongoose.model("project",todoSchema);
+
+module.exports=Todos;
+
+ */
+var mongoose=require("mongoose");
+var Schema =mongoose.Schema;
+var Members=require('./Model_Members.js')
+
+var todoSchema= new Schema({
+	_id:Schema.Types.ObjectId,
+    name:String,
+    timeCreate:String,
+    describe:String,
+    _idCreator:[{type:Schema.Types.ObjectId,ref:'Members'}]
+
     
 });
 
