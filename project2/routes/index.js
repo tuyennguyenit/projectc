@@ -100,26 +100,9 @@ var exists= User.findOne({ email: un , password:pwd }, function(err, user) {
   // object of all the users
   console.log(folders);
   //res.render('folders/1', {folders:folders});
-  //router.get('/folders/1')
+  //load lại trang 1
+  getLoadFolder(req,res)
  
-  let perPage = 1;
-  let page = 1 || 1;
-
-  Folder
-    .find({}) // finding all documents
-    .skip((perPage * page) - perPage) // in the first page the value of the skip is 0
-    .limit(perPage) // output just 9 items
-    .exec((err, folder) => {
-      console.log('xxxxxxx'+folder)
-      Folder.count((err, count) => { // count to calculate the number of pages
-        if (err) return next(err);
-        res.render('folders', {
-          folders:folder,
-          current: page,
-          pages: Math.ceil(count / perPage)
-        });
-      });
-    });
 
 });
 		
@@ -152,19 +135,19 @@ var exists= User.findOne({ email: un , password:pwd }, function(err, user) {
 
 // });
 
-router.get('/folders/:page', (req, res, next) => {
+router.get('/folderspage/:page', (req, res, next) => {
 
   if(req.session.email!=null){
-  let perPage = 1;
+  let perPage = 3;
   let page = req.params.page || 1;
 
   Folder
-    .find({}) // finding all documents
+    .find({ email:req.session.email }) // finding all documents
     .skip((perPage * page) - perPage) // in the first page the value of the skip is 0
     .limit(perPage) // output just 9 items
     .exec((err, folder) => {
-      console.log('xxxxxxx'+folder)
-      Folder.count((err, count) => { // count to calculate the number of pages
+      console.log('xxxxxxx'+folder.size)
+      Folder.find({ email:req.session.email }) .count((err, count) => { // count to calculate the number of pages
         if (err) return next(err);
         res.render('folders', {
           folders:folder,
@@ -177,6 +160,29 @@ router.get('/folders/:page', (req, res, next) => {
     res.render('index',{"message" :"Login to continue"});
   }
 });
+
+/// viết 1 hàm để load đc trang dùng chung
+//hàm này load page 1
+function getLoadFolder(req,res) {
+  let perPage = 3;
+  let page =1 || 1;
+
+  Folder
+    .find({ email:req.session.email }) // finding all documents
+    .skip((perPage * page) - perPage) // in the first page the value of the skip is 0
+    .limit(perPage) // output just 9 items
+    .exec((err, folder) => {
+      console.log('load page:'+folder)
+      Folder.find({ email:req.session.email }).count((err, count) => { // count to calculate the number of pages
+        if (err) return next(err);
+        res.render('folders', {
+          folders:folder,
+          current: page,
+          pages: Math.ceil(count / perPage)
+        });
+      });
+    });
+}
 
 
 //Create Folders
@@ -201,13 +207,13 @@ var email=req.session.email;
 		// save the user
 		newFolder.save(function(err) {
   		if (err) {console.log(err); throw err;} 
-  			console.log('Folder created!!');
+        console.log('Folder created!!');
+        getLoadFolder(req,res)
 		});
-		  		Folder.find({email:req.session.email}, function(err, folders) {
-  if (err) throw err;
+		  
+  //res.render('folders', {folders:folders});
+  
 
-  res.render('folders', {folders:folders});
-});
   	}
   	else
   	{	console.log("folder exists");
@@ -232,11 +238,10 @@ router.get('/folders/delete/:folderName?', function(req, res) {
           console.log("Error in delete"+err);  
     }
     else {
-    	Folder.find({email:req.session.email}, function(err, folders) {
-  if (err) throw err;
+  
 
-  res.render('folders', {folders:folders});
-});
+  //res.render('folders', {folders:folders});
+  getLoadFolder(req,res)
             
     }
 });
@@ -261,11 +266,12 @@ router.get('/folders/edit', function(req, res) {
       if (err) {
           return res.status(500).json(err);
       } else {
-        Folder.find({email:req.session.email}, function(err, folders) {
-          if (err) throw err;
+        // Folder.find({email:req.session.email}, function(err, folders) {
+        //   if (err) throw err;
         
-          res.render('folders', {folders:folders});
-        });
+        //   //res.render('folders', {folders:folders});
+        // });
+        getLoadFolder(req,res)
       }
   }
 
