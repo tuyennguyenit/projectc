@@ -1,5 +1,6 @@
 var express = require('express');
-var router = express.Router();
+//var router = express.Router();
+var router = express();
 var path = require('path');
 var User = require.main.require('./models/user');
 var Folder = require.main.require('./models/folder');
@@ -9,6 +10,9 @@ var mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 mongoose.connect(dbConfig.url);
 var session = require('express-session');
+//show images
+//var path = require('path');
+//router.use(express.static(path.join(__dirname, 'public')));
 
 
 //Home
@@ -56,7 +60,10 @@ User.findOne({ email: un }, function(err, user) {
   	{
 
   		var newUser = User({email:  req.body.email,
-  					  password: req.body.password
+              password: req.body.password,
+              name:'1',
+              avatar:'1'
+              
   					});
 		// save the user
 		newUser.save(function(err) {
@@ -110,6 +117,103 @@ var exists= User.findOne({ email: un , password:pwd }, function(err, user) {
   }
 });
 });
+
+//get profile 
+router.get('/profile', function(req, res) {
+	console.log("call to folders.."+req.session.email);
+if(req.session.email!=null){
+
+   User.find({email:req.session.email}, function(err, user) {
+  if (err) throw err;
+
+  // object of all the users
+  console.log(user);
+  res.render('user', {user: user});
+});
+}
+else
+{
+  res.render('index',{"message" :"Login to continue"});
+}
+});
+
+//upload file
+var multer=require('multer');
+
+var storage= multer.diskStorage({
+    destination : function (req,file,cb) { 
+        cb(null,'./public/upload') //đường đẫn
+     },
+     filename : function (req,file,cb) { 
+         cb(null,file.originalname)
+      }
+});
+
+var upload= multer({storage:storage})
+//round /upload
+router.post('/upload',upload.single('file'),function(req,res){
+    console.log("zzz");
+    res.send("upload thanh cong!");
+    //res.render('form');
+});
+
+//round bình thường là render tới form.html
+router.get('/up',function(req,res){
+    res.render('uploadfile')
+});
+
+//upload image profile 
+router.post('/profile/upload',upload.single('file'), function(req, res) {
+   console.log(req.file.originalname)
+    User.update({
+      email: req.session.email
+  }, {
+    avatar: req.file.originalname
+  }, function (err, folders) {
+      if (err) {
+          return res.status(500).json(err);
+      } else {
+        User.find({email:req.session.email}, function(err, user) {
+          if (err) throw err;
+        
+          res.render('user', {user:user});
+        });
+       
+      }
+  }
+
+);
+
+ 
+});
+
+//edit profile 
+router.post('/profile/edit', function(req, res) {
+  var pass=req.body.password,
+      name=req.body.name
+    User.update({
+      email: req.session.email
+  }, {
+    password: pass,
+    name: name,
+  }, function (err, folders) {
+      if (err) {
+          return res.status(500).json(err);
+      } else {
+        User.find({email:req.session.email}, function(err, user) {
+          if (err) throw err;
+        
+          res.render('user', {user:user});
+        });
+       
+      }
+  }
+
+); 
+});
+
+
+
 
 
 
