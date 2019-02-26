@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <% include template/head.ejs %>
+  <link href="../stylesheets/css-circular-chart.css" media="all" rel="stylesheet" />
 </head>
 <body>
 
@@ -25,18 +26,113 @@
 
 <div class="col-md-4">
 <table class="table">
-  <tr><th>Done</th><th>Task</th></tr>
+  <tr><th>Done</th><th>Task</th><th>progress</th><th>_idUserMember</th><th>_idUserReviewer</th><th>priority</th></tr>
 <% if(typeof(folder.tasks)!='undefined'){%>
   <% for(i=0;i< folder.tasks.length; i++) 
 {%>
 	<tr>
 		<td ><a href="/folders/delete/<%=folder.name%>/<%=folder.tasks[i].tname%>"> <span class="glyphicon glyphicon-ok"></span></span></a></td>
     <td><p><%=folder.tasks[i].tname%></p></td>
+    <td><p><%=folder.tasks[i]._idUserMember%></p></td>
+    <td><p><%=folder.tasks[i]._idUserReviewer%></p></td>
+
+    <td>
+        <!--biểu đồ cho tiến độ-->
+        <div class="single-chart">
+        <svg viewBox="0 0 36 36" class="circular-chart green">
+          <path class="circle-bg"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <path class="circle"
+            stroke-dasharray="<%=folder.tasks[i].priority%>, 100"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <text x="18" y="20.35" class="percentage"><%=folder.tasks[i].progress%>%</text>
+        </svg>
+      </div>
+
+     </td> 
+
+     <td><p><%=folder.tasks[i].priority%></p></td>
+     <td>
+         <span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#editTaskModal<%=folder.tasks[i]._id%>"></span>
+                      <!-- edit tasks Modal -->
+              <div class="modal fade" id="editTaskModal<%=folder.tasks[i]._id%>" role="dialog">
+              <div class="modal-dialog">
+              
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Task</h4>
+                  </div>
+                  <div class="modal-body">
+
+                    <form action="/tasks/edit/<%=folder.name%>/<%=folder.tasks[i]._id%>" method="POST" role="form">
+                        <div class="form-group">
+                          <label for="name">Task : </label>
+                          <input type="text" class="form-control" id="name" name="taskName" value="<%=folder.tasks[i].tname%>">
+                        </div>  
+
+                        <div class="form-group">
+                        <label for="name">_idUserMember : </label>
+                        <input type="text" class="form-control" id="name" name="_idUserMember" value="<%=folder.tasks[i]._idUserMember%>">
+
+                        <div class="form-group">
+                          <label for="sel1">Select priority:</label>
+                          <select class="form-control" id="sel1" name="priority" " value="<%=folder.tasks[i].priority%>" >
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                        <label for="name">_idUserReviewer : </label>
+                        <input type="text" class="form-control" id="name" name="_idUserReviewer" value="<%=folder.tasks[i]._idUserReviewer%>">
+
+                        <div class="form-group">
+                        <label for="name"> progress: </label>
+                        <input type="number" class="form-control" id="name" name="progress" value="<%=folder.tasks[i].progress%>">
+
+                      </div>
+
+                        <button type="submit" class="btn btn-default">Edit</button>
+                    </form>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+                
+              </div>
+            </div> <!--end task model-->
+      </td>
+
+
+ </div>
+</div>
    
-	</tr>
+   
+  </tr>
+  
 <%} %>
 <% }%>
 </table>
+
+
 </div>
 
    <!--Create Fodler Modal -->
@@ -50,14 +146,44 @@
           <h4 class="modal-title">Create Task</h4>
         </div>
         <div class="modal-body">
-          <form action="/tasks/<%=folder.name%>" method="POST" role="form">
-  <div class="form-group">
-    <label for="name">Task : </label>
-    <input type="text" class="form-control" id="name" name="taskName">
-  </div>
 
-  <button type="submit" class="btn btn-default">Create</button>
-</form>
+          <form action="/tasks/<%=folder.name%>" method="POST" role="form">
+              <div class="form-group">
+                <label for="name">Task : </label>
+                <input type="text" class="form-control" id="name" name="taskName">
+              </div>  
+
+              <div class="form-group">
+              <label for="name">_idUserMember : </label>
+              <input type="text" class="form-control" id="name" name="_idUserMember">
+
+              <div class="form-group">
+                <label for="sel1">Select priority:</label>
+                <select class="form-control" id="sel1" name="priority">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                </select>
+              </div>
+
+
+
+              <div class="form-group">
+              <label for="name">_idUserReviewer : </label>
+              <input type="text" class="form-control" id="name" name="_idUserReviewer">
+
+            </div>
+
+              <button type="submit" class="btn btn-default">Create</button>
+          </form>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -65,7 +191,10 @@
       </div>
       
     </div>
-  </div>
+  </div> <!--end model-->
+
+
+ 
 
 </div>
 

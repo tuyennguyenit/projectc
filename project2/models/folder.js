@@ -7,7 +7,7 @@ var folderSchema = new Schema({
   name: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   created: { type: String, required: true },
-  tasks: [{ _id:false, tname: {type: String}}],
+  tasks: [{  tname: {type: String},progress:{type:String},_idUserMember:{type:String},_idUserReviewer:{type:String},priority:{type:String}}],
   describe:{type:String, required: true}
   
 });

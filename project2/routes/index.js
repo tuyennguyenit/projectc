@@ -411,7 +411,7 @@ router.post('/tasks/:foldername', function(req, res) {
 	console.log("call to create tasks.."+req.params.foldername+req.body.taskName);
 
   Folder.findOneAndUpdate( { email:req.session.email, name:req.params.foldername }, 
-    {$push: {"tasks": {tname: req.body.taskName}}},
+    {$push: {"tasks": {tname: req.body.taskName,progress:'0',_idUserMember:req.body._idUserMember,_idUserReviewer:req.body._idUserReviewer,priority:req.body.priority }}},
    {new: true},
     function(err, folder) {
   if (err){
@@ -427,6 +427,83 @@ res.render('tasks', {folder:folder});
 } 
 });
 
+
+//edit Tasks
+router.post('/tasks/edit/:foldername/:_idtask', function(req, res) {
+  if(req.session.email!=null){
+  var email=req.session.email;
+  console.log("call to edit tasks.."+req.params.foldername);
+  
+    //thu cach khac
+    // db.Folder.update( {name : '5' , "tasks._id" : "5c74fdac33639c2284e6e0de" } , 
+    // {$inc : {"tasks.$.tname" : 'dasua'} } , 
+    // false , 
+    // true);	
+
+//   Folder.findOneAndUpdate( { email:req.session.email, name:req.params.foldername,"tasks._id": req.body._idtask }, 
+//     {$push: {"tasks": {tname: req.body.taskName,progress:'0',_idUserMember:req.body._idUserMember,_idUserReviewer:req.body._idUserReviewer,priority:req.body.priority }}},
+//    {new: false},
+//     function(err, folder) {
+//   if (err){
+//     console.log("Error on task save "+err); throw err;
+//   }
+// // we have the updated user returned to us
+// console.log("Updated "+folder);
+// res.render('tasks', {folder:folder});
+//   });
+
+Folder.update({
+  email: req.session.email, name:req.params.foldername,'tasks._id': req.params._idtask
+}, {
+
+"tasks.$.tname": req.body.taskName,
+"tasks.$.progress":req.body.progress,
+"tasks.$._idUserMember":req.body._idUserMember,
+"tasks.$._idUserReviewer":req.body._idUserReviewer,
+"tasks.$.priority":req.body.priority 
+}, function (err, folders) {
+  if (err) {
+      return res.status(500).json(err);
+  } else {
+    console.log("Updated tasks ok");
+    res.render('tasks', {folder:folders});
+  }
+})
+
+}
+      else
+{
+  res.render('index',{"message" :"Login to continue"});
+} 
+});
+
+//edit tasks
+router.get('/tasks/edit', function(req, res) {
+
+  var query = require('url').parse(req.url,true).query;
+
+    Folder.update({
+      email: req.session.email, name:query.folderName,'tasks._id': '5c74fdac33639c2284e6e0de'
+  }, {
+   
+    "tasks.$.tname":query.tname
+  }, function (err, folders) {
+      if (err) {
+          return res.status(500).json(err);
+      } else {
+        // Folder.find({email:req.session.email}, function(err, folders) {
+        //   if (err) throw err;
+        
+        //   //res.render('folders', {folders:folders});
+        // });
+        getLoadFolder(req,res)
+      }
+  }
+
+);
+
+ 
+});
 //Delete tasks
 router.get('/folders/delete/:folderName/:taskName', function(req, res) {
 if(req.session.email!=null){
