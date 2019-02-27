@@ -8,7 +8,8 @@ var folderSchema = new Schema({
   email: { type: String, required: true },
   created: { type: String, required: true },
   tasks: [{  tname: {type: String},progress:{type:String},_idUserMember:{type:String},_idUserReviewer:{type:String},priority:{type:String}}],
-  describe:{type:String, required: true}
+  describe:{type:String, required: true},
+  members:[{mName:{type:String},address:{type:String}}]
   
 });
 

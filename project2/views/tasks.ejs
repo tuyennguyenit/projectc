@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <% include template/head.ejs %>
-  <link href="../stylesheets/css-circular-chart.css" media="all" rel="stylesheet" />
+ 
 </head>
 <body>
 
@@ -22,42 +22,41 @@
 
 
 <div class="container">
-  <h3>Tasks<button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#createTaskModal"><span class="glyphicon glyphicon-plus"></span>  Create Task</button></h3>
-
+  <h3>Tasks<button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#createTaskModal"><span class="glyphicon glyphicon-plus"></span>  Create  Task</button></h3>
+  <button type="button" class="btn btn-success   pull-right" data-toggle="modal" data-target="#createMembModal" style='margin-top: 8px;'>
+  <span class="glyphicon glyphicon-user"></span> AddMember</button>
 <div class="col-md-4">
-<table class="table">
-  <tr><th>Done</th><th>Task</th><th>progress</th><th>_idUserMember</th><th>_idUserReviewer</th><th>priority</th></tr>
-<% if(typeof(folder.tasks)!='undefined'){%>
+
+
+
+<table class="table table-hover">
+ <thead>
+  <tr><th>Task</th><th>Member</th><th>Reviewer</th><th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspProgress&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th><th>Priority</th><th>Edit</th><th>Delete</th></tr>
+ </thead>
+  <% if(typeof(folder.tasks)!='undefined'){%>
   <% for(i=0;i< folder.tasks.length; i++) 
 {%>
+<tbody>
+
 	<tr>
-		<td ><a href="/folders/delete/<%=folder.name%>/<%=folder.tasks[i].tname%>"> <span class="glyphicon glyphicon-ok"></span></span></a></td>
     <td><p><%=folder.tasks[i].tname%></p></td>
     <td><p><%=folder.tasks[i]._idUserMember%></p></td>
     <td><p><%=folder.tasks[i]._idUserReviewer%></p></td>
 
     <td>
         <!--biểu đồ cho tiến độ-->
-        <div class="single-chart">
-        <svg viewBox="0 0 36 36" class="circular-chart green">
-          <path class="circle-bg"
-            d="M18 2.0845
-              a 15.9155 15.9155 0 0 1 0 31.831
-              a 15.9155 15.9155 0 0 1 0 -31.831"
-          />
-          <path class="circle"
-            stroke-dasharray="<%=folder.tasks[i].priority%>, 100"
-            d="M18 2.0845
-              a 15.9155 15.9155 0 0 1 0 31.831
-              a 15.9155 15.9155 0 0 1 0 -31.831"
-          />
-          <text x="18" y="20.35" class="percentage"><%=folder.tasks[i].progress%>%</text>
-        </svg>
-      </div>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:<%=folder.tasks[i].progress%>%">
+          <%=folder.tasks[i].progress%>%
+          </div>
+        </div>
+
+       
 
      </td> 
 
      <td><p><%=folder.tasks[i].priority%></p></td>
+    
      <td>
          <span class="glyphicon glyphicon-edit" data-toggle="modal" data-target="#editTaskModal<%=folder.tasks[i]._id%>"></span>
                       <!-- edit tasks Modal -->
@@ -74,33 +73,48 @@
 
                     <form action="/tasks/edit/<%=folder.name%>/<%=folder.tasks[i]._id%>" method="POST" role="form">
                         <div class="form-group">
-                          <label for="name">Task : </label>
+                          <label for="name">Task name </label>
                           <input type="text" class="form-control" id="name" name="taskName" value="<%=folder.tasks[i].tname%>">
                         </div>  
 
+            
+
                         <div class="form-group">
-                        <label for="name">_idUserMember : </label>
-                        <input type="text" class="form-control" id="name" name="_idUserMember" value="<%=folder.tasks[i]._idUserMember%>">
+                        <label for="name">User Member : </label>
+                          <select class="form-control"  name="_idUserMember" value="<%=folder.tasks[i]._idUserMember%>">
+                            <% if(typeof(folder.members)!='undefined'){%>
+                              
+                            <% for(k=0;k< folder.members.length; k++) 
+                            {%>
+                                <option><%=folder.members[k].mName%></option>
+                            <%}}%>
+                          </select>
+                       </div>   
+                        
 
                         <div class="form-group">
                           <label for="sel1">Select priority:</label>
                           <select class="form-control" id="sel1" name="priority" " value="<%=folder.tasks[i].priority%>" >
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
-                            <option>9</option>
-                            <option>10</option>
+                            <%for(j=1;j<10;j++){%>
+                                <option><%=j%></option>
+                            <%}%>
                           </select>
                         </div>
 
+                       
+
                         <div class="form-group">
-                        <label for="name">_idUserReviewer : </label>
-                        <input type="text" class="form-control" id="name" name="_idUserReviewer" value="<%=folder.tasks[i]._idUserReviewer%>">
+                        <label for="name">User Reviewe : </label>
+                          <select class="form-control"  name="_idUserReviewer" value="<%=folder.tasks[i]._idUserReviewer%>">
+                            <% if(typeof(folder.members)!='undefined'){%>
+                              
+                            <% for(k=0;k< folder.members.length; k++) 
+                            {%>
+                                <option><%=folder.members[k].mName%></option>
+                            <%}}%>
+                          </select>
+                       </div>   
+                        
 
                         <div class="form-group">
                         <label for="name"> progress: </label>
@@ -125,8 +139,9 @@
  </div>
 </div>
    
-   
+<td ><a href="/folders/delete/<%=folder.name%>/<%=folder.tasks[i].tname%>"> <span class="glyphicon glyphicon-ok"></span></span></a></td>
   </tr>
+  <tbody>
   
 <%} %>
 <% }%>
@@ -154,8 +169,17 @@
               </div>  
 
               <div class="form-group">
-              <label for="name">_idUserMember : </label>
-              <input type="text" class="form-control" id="name" name="_idUserMember">
+                <label for="name">_User Member : </label>
+                  <select class="form-control"  name="_idUserMember">
+                    <% if(typeof(folder.members)!='undefined'){%>
+                      
+                    <% for(i=0;i< folder.members.length; i++) 
+                    {%>
+                        <option><%=folder.members[i].mName%></option>
+                    <%}}%>
+                  </select>
+               </div>   
+             
 
               <div class="form-group">
                 <label for="sel1">Select priority:</label>
@@ -172,14 +196,20 @@
                   <option>10</option>
                 </select>
               </div>
+             
 
-
-
-              <div class="form-group">
-              <label for="name">_idUserReviewer : </label>
-              <input type="text" class="form-control" id="name" name="_idUserReviewer">
-
-            </div>
+            <div class="form-group">
+                <label for="name"> User Reviewer : </label>
+                  <select class="form-control"  name="_idUserReviewer">
+                    <% if(typeof(folder.members)!='undefined'){%>
+                      
+                    <% for(i=0;i< folder.members.length; i++) 
+                    {%>
+                        <option><%=folder.members[i].mName%></option>
+                    <%}}%>
+                  </select>
+               </div>   
+             
 
               <button type="submit" class="btn btn-default">Create</button>
           </form>
@@ -193,10 +223,81 @@
     </div>
   </div> <!--end model-->
 
+  
 
- 
 
+
+
+          
 </div>
+
+
+
+
+  <!--Create member Modal -->
+  <div class="modal fade" id="createMembModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">View Members</h4>
+          <hr>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Stt</th>
+                  <th>Name</th>
+                  <th>address</th>
+                  <th>delete</th>                
+                </tr>
+              </thead>
+
+              <tbody>
+                              
+              <% if(typeof(folder.members)!='undefined'){%>
+                          
+              <% for(i=0;i< folder.members.length; i++) 
+              {%>
+                <tr> 
+                    <td><%=i+1%></td>
+                    <td><%=folder.members[i].mName%></td>
+                    <td><%=folder.members[i].address%></td>
+                    <td><a href="/members/delete/<%=folder.name%>/<%=folder.members[i]._id%>"><span class="glyphicon glyphicon-remove"></span></a></td>
+                </tr>    
+              <%}}%>
+             
+              </tbody>
+            </table>  
+        </div>
+        
+        <div class="modal-body">
+        <h4 class="modal-title">Add Members</h4>
+        <br>
+          <form action="/members/add/<%=folder.name%>" method="POST" role="form">
+              <div class="form-group">
+                <label for="name">Name : </label>
+                <input type="text" class="form-control" id="name" name="mName">
+              </div>  
+
+              <div class="form-group">
+              <label for="name">address : </label>
+              <input type="text" class="form-control" id="name" name="address">
+
+            </div>
+              <button type="submit" class="btn btn-default">add</button>
+
+          </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div> <!--end model-->
 
 </body>
 </html>

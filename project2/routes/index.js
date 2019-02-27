@@ -306,7 +306,8 @@ var email=req.session.email;
   					  email:email,
   					  created: Date(),
               tasks: [],
-              describe:describe
+              describe:describe,
+              members:[]
   					});
 		// save the user
 		newFolder.save(function(err) {
@@ -365,7 +366,8 @@ router.get('/folders/edit', function(req, res) {
     Folder.update({
       email: req.session.email, name:query.folderName
   }, {
-    describe:query.folderDescribe
+    describe:query.folderDescribe,
+   
   }, function (err, folders) {
       if (err) {
           return res.status(500).json(err);
@@ -433,77 +435,34 @@ router.post('/tasks/edit/:foldername/:_idtask', function(req, res) {
   if(req.session.email!=null){
   var email=req.session.email;
   console.log("call to edit tasks.."+req.params.foldername);
-  
-    //thu cach khac
-    // db.Folder.update( {name : '5' , "tasks._id" : "5c74fdac33639c2284e6e0de" } , 
-    // {$inc : {"tasks.$.tname" : 'dasua'} } , 
-    // false , 
-    // true);	
-
-//   Folder.findOneAndUpdate( { email:req.session.email, name:req.params.foldername,"tasks._id": req.body._idtask }, 
-//     {$push: {"tasks": {tname: req.body.taskName,progress:'0',_idUserMember:req.body._idUserMember,_idUserReviewer:req.body._idUserReviewer,priority:req.body.priority }}},
-//    {new: false},
-//     function(err, folder) {
-//   if (err){
-//     console.log("Error on task save "+err); throw err;
-//   }
-// // we have the updated user returned to us
-// console.log("Updated "+folder);
-// res.render('tasks', {folder:folder});
-//   });
-
-Folder.update({
-  email: req.session.email, name:req.params.foldername,'tasks._id': req.params._idtask
-}, {
-
-"tasks.$.tname": req.body.taskName,
-"tasks.$.progress":req.body.progress,
-"tasks.$._idUserMember":req.body._idUserMember,
-"tasks.$._idUserReviewer":req.body._idUserReviewer,
-"tasks.$.priority":req.body.priority 
-}, function (err, folders) {
-  if (err) {
-      return res.status(500).json(err);
-  } else {
-    console.log("Updated tasks ok");
-    res.render('tasks', {folder:folders});
-  }
-})
-
-}
-      else
-{
-  res.render('index',{"message" :"Login to continue"});
-} 
-});
-
-//edit tasks
-router.get('/tasks/edit', function(req, res) {
-
-  var query = require('url').parse(req.url,true).query;
-
-    Folder.update({
-      email: req.session.email, name:query.folderName,'tasks._id': '5c74fdac33639c2284e6e0de'
+    
+  Folder.update({
+    email: req.session.email, name:req.params.foldername,'tasks._id': req.params._idtask
   }, {
-   
-    "tasks.$.tname":query.tname
-  }, function (err, folders) {
-      if (err) {
-          return res.status(500).json(err);
-      } else {
-        // Folder.find({email:req.session.email}, function(err, folders) {
-        //   if (err) throw err;
-        
-        //   //res.render('folders', {folders:folders});
-        // });
-        getLoadFolder(req,res)
-      }
-  }
 
-);
-
+  "tasks.$.tname": req.body.taskName,
+  "tasks.$.progress":req.body.progress,
+  "tasks.$._idUserMember":req.body._idUserMember,
+  "tasks.$._idUserReviewer":req.body._idUserReviewer,
+  "tasks.$.priority":req.body.priority 
+  }, function (err, folder) {
+    if (err) {
+        return res.status(500).json(err);
+    } 
+      console.log("Updated tasks ok");
+      res.render('tasks', {folder:folder});
  
+   
+  })
+
+  }
+        else
+  {
+    res.render('index',{"message" :"Login to continue"});
+  } 
 });
+
+
 //Delete tasks
 router.get('/folders/delete/:folderName/:taskName', function(req, res) {
 if(req.session.email!=null){
@@ -515,14 +474,12 @@ if(req.session.email!=null){
   Folder.findOneAndUpdate( { email:temail, name:req.params.folderName }, {$pull: {"tasks": {tname: req.params.taskName}}},
    {new: true},
     function(err, folder) {
-  if (err){
-    console.log("Error on task save "+err); throw err;
-  }
-
-
-// we have the updated user returned to us
-console.log("Updated "+folder);
-res.render('tasks', {folder:folder});
+    if (err){
+      console.log("Error on task save "+err); throw err;
+    }
+      // we have the updated user returned to us
+      console.log("Updated "+folder);
+      res.render('tasks', {folder:folder});
   }); 
     }
      else
@@ -546,6 +503,54 @@ res.render('tasks', {folder:folder});
 //   })
 //   }
 // });
+
+//add members vào folder
+router.post('/members/add/:foldername', function(req, res) {
+  if(req.session.email!=null){
+  var email=req.session.email;
+	console.log("call to create tasks.."+req.params.foldername+req.body.taskName);
+
+  Folder.findOneAndUpdate( { email:req.session.email, name:req.params.foldername }, 
+    {$push: {"members": {mName: req.body.mName,address:req.body.address }}},
+   {new: true},
+    function(err, folder) {
+  if (err){
+    console.log("Error on member add  "+err); throw err;
+  }
+// we have the updated user returned to us
+console.log("Updated "+folder);
+res.render('tasks', {folder:folder});
+  });}
+      else
+{
+  res.render('index',{"message" :"Login to continue"});
+} 
+});
+
+
+//Delete member
+router.get('/members/delete/:folderName/:id', function(req, res) {
+  if(req.session.email!=null){
+    var temail =req.session.email;
+    console.log("call to delte members......"+temail+req.params.folderName);
+    Folder.findOneAndUpdate( { email:temail, name:req.params.folderName }, {$pull: {"members": {_id: req.params.id}}},
+     {new: true},
+      function(err, folder) {
+    if (err){
+      console.log("Error on task save "+err); throw err;
+    }
+      // we have the updated user returned to us
+    console.log("Updated "+folder);
+    res.render('tasks', {folder:folder});
+      }); 
+        }
+        else
+    {
+      res.render('index',{"message" :"Login to continue"});
+    }    
+    });
+    
+
 
 
 module.exports = router;
