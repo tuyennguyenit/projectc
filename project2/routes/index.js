@@ -287,7 +287,23 @@ function getLoadFolder(req,res) {
       });
     });
 }
-
+//function load  => tam thoi giai quyet loi o edit tasks
+function getLoadTasks(req,res){
+  if(req.session.email!=null){
+    console.log("call to load tasks.."+req.params.folderName);
+      
+    Folder.findOne({email:req.session.email, name:req.params.foldername }
+          , function(err, folder) {
+            if (err) throw err;
+  console.log(folder);
+            res.render('tasks', {folder:folder});
+  });
+      }
+       else
+  {
+    res.render('index',{"message" :"Login to continue"});
+  }
+}
 
 //Create Folders
 router.post('/folders', function(req, res) {
@@ -436,24 +452,27 @@ router.post('/tasks/edit/:foldername/:_idtask', function(req, res) {
   var email=req.session.email;
   console.log("call to edit tasks.."+req.params.foldername);
     
-  Folder.update({
-    email: req.session.email, name:req.params.foldername,'tasks._id': req.params._idtask
-  }, {
-
+  Folder.update({email: req.session.email, name:req.params.foldername,'tasks._id': req.params._idtask},
+   {
   "tasks.$.tname": req.body.taskName,
   "tasks.$.progress":req.body.progress,
   "tasks.$._idUserMember":req.body._idUserMember,
   "tasks.$._idUserReviewer":req.body._idUserReviewer,
   "tasks.$.priority":req.body.priority 
-  }, function (err, folder) {
+  },{new: true}, function (err, folder) {
     if (err) {
-        return res.status(500).json(err);
-    } 
-      console.log("Updated tasks ok");
-      res.render('tasks', {folder:folder});
- 
-   
-  })
+      console.log("Error on task save "+err); throw err;
+    }
+    
+    //getLoadTasks(req,res)
+    //load lại data folder
+        Folder.findOne({email:req.session.email, name:req.params.foldername }
+          , function(err, folder) {
+            if (err) throw err;
+            console.log('lan 2'+folder);
+            res.render('tasks', {folder:folder});
+    });
+  });
 
   }
         else
