@@ -2,13 +2,22 @@
 <html lang="en">
     <head>
        <%include template/head.ejs%>
+       <link href="/assets/css/bootstrap.css" rel="stylesheet">
+      <!--external css-->
+      <link href="/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+          
+      <!-- Custom styles for this template -->
+      <link href="/assets/css/style.css" rel="stylesheet">
+      <link href="/assets/css/style-responsive.css" rel="stylesheet">
+      <script src="/js/file.js"></script>
+
     </head>
 
     <body ng-app="">
     
-	<nav class="navbar navbar-inverse">
+	<nav class="navbar navbar-inverse ">
   <div class="container-fluid">
-    <div class="navbar-header">
+    <div class="navbar-header ">
      <p> <a class="navbar-brand" href="/">Todolist <sub>By me</sub></a></p>
     </div>  
 
@@ -26,25 +35,24 @@
   <h3>Profile</h3>
   <form action="/profile/edit" method="post">
     <h4>Email: <%=user[0].email%></h4> 
-    <br>
-    <h4>password:</h4> <input type="password" name="password" value="<%=user[0].password%>" ng-model="passLogin.text">
-    <h4>confirm password:</h4> <input type="password" name="" value="<%=user[0].password%>" ng-model="passLogin1.text">
-    <span ng-show="(passLogin.text != passLogin1.text) && (passLogin1.text)"><i style="color:red">password wrong!</i> </span>
-    <br>
-    <h4>name:</h4> <input type="text" name="name" value="<%=user[0].name%>">
-    <br>
-  
-    <h4>avatar:</h4> <img src="/upload/<%=user[0].avatar%>" style="border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    width: 150px;">
-
+    <h4>avatar:</h4> <img src="/upload/<%=user[0].avatar%>"  class="img-circle" width="260">
     <a href="#" data-toggle="modal" data-target="#uploadModal"><span class="glyphicon glyphicon-pencil"></span> </a>
 
+    <br>
+    <h4>password:</h4> <input class="form-control" type="password" name="password" value="<%=user[0].password%>" ng-model="passLogin.text">
+    <h4>confirm password:</h4> <input type="password" class="form-control" name="" value="<%=user[0].password%>" ng-model="passLogin1.text">
+    <span ng-show="(passLogin.text != passLogin1.text) && (passLogin1.text)"><i style="color:red">password wrong!</i> </span>
+    <br>
+    <h4>name:</h4> <input class="form-control" type="text" name="name" value="<%=user[0].name%>">
+    <br>
+  
+   
+
+    
     
         <br><br>
-    <button type="submit" class="btn btn-primary" ng-disabled="(passLogin.text != passLogin1.text)||(!passLogin.text)||(!passLogin1.text)">Update</button>    
-    <button type="" class="btn btn-default">cancel</button>
+    <button type="submit" class="btn  btn-theme02" ng-disabled="(passLogin.text != passLogin1.text)||(!passLogin.text)||(!passLogin1.text)">Update</button>    
+    <button type="" class="btn btn-theme">cancel</button>
  </form>
 
 
@@ -70,7 +78,7 @@
 
      <form action="/profile/upload" method="post"  enctype="multipart/form-data">
       <h4>avatar name using:</h4>  <%=user[0].avatar%>
-      <h4>choose file:</h4> <input type="file" name="file" > <br>
+      <h4>choose file:</h4> <input type="file" name="file"  class="form-control-file border"> <br>
           <br><br>
       <button type="submit" class="btn btn-primary" >upload</button>    
     
@@ -83,7 +91,18 @@
    </div>
    
  </div>
-</div><!--upload Modal>
+</div><!--upload Modal-->
+
+<br><br><br><br><br>
+<footer class="site-footer">
+          <div class="text-center">
+              2019 - HoaTamus
+              <a href="" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
+
  </body>
 </html>
 

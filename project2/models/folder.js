@@ -4,12 +4,12 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var folderSchema = new Schema({
-  name: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
-  created: { type: String, required: true },
-  tasks: [{  tname: {type: String},progress:{type:String},_idUserMember:{type:String},_idUserReviewer:{type:String},priority:{type:String}}],
-  describe:{type:String, required: true},
-  members:[{mName:{type:String},address:{type:String}}]
+  name: String,
+  email: String,
+  created: String,
+  tasks: [{  tname: String,progress:String,_idUserMember:String,_idUserReviewer:String,priority:String}],
+  describe:String,
+  members:[{mName:String,address:String}]
   
 });
 

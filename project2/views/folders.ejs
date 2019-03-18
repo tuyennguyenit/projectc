@@ -2,7 +2,17 @@
 <html lang="en">
 <head>
   <% include template/head.ejs %>
-  <script type="text/javascript">
+  <script src="/js/file.js"></script>
+<!-- Bootstrap core CSS -->
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!--external css-->
+<link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    
+<!-- Custom styles for this template -->
+<link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/style-responsive.css" rel="stylesheet">
+
+  <script type="text/javascript">  
   function deleteFolder(obj)
   {
   	alert(obj);
@@ -18,7 +28,7 @@
     </div>  
 
      <ul class="nav navbar-nav navbar-right">
-     <li><a href="/profile" ><span class="glyphicon glyphicon-user"></span> Profilet</a></li>
+     <li><a href="/profile" ><span class="glyphicon glyphicon-user"></span> Profile</a></li>
       <li><a href="/signout" ><span class="glyphicon glyphicon-log-in"></span> Sign Out</a></li>
     </ul> 
   </div>
@@ -30,27 +40,36 @@
   <h3>Folders  <button type="button" data-toggle="modal" data-target="#createFolderModal" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> Create Folder</button></h3>
 
 <div class="container">
-<table class="table">
-	<tr>
-		<th>Open</th>
-    <th>Delete</th>
-    <th>Edit</th>
-    <th>Name</th>
-    <th>Describe</th>
-		<th>Created On</th>
-	</tr>
-<% for(i=0;i< folders.length; i++) 
-{%>
-  <tr>
-    <td><a href="/folders/<%=folders[i].name%>"><span class="glyphicon glyphicon-folder-open"></span></a></td>
-    <td><a href="/folders/delete/<%=folders[i].name%>" onclick="return confirm('Are you sure you want to delete this item?');"><span class="glyphicon glyphicon-remove"></span></a></td>
-    <td><a href="" data-toggle="modal" data-target="#editFolderModal<%=folders[i].name%>"><span class="glyphicon glyphicon-edit"></span></a></td>
-    <td><p><%=folders[i].name%></p></td>
-    <td><p><%=folders[i].describe%></p></td>
-		<td><p><%=folders[i].created%></p></td>
-  </tr>
-  
+<table class="table table-striped" id="folderDataTable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Describe</th>
+      <th>Created On</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+ <tbody>
+ <% for(i=0;i< folders.length; i++) 
+ {%>
+   <tr>
+     <td><%=i+1%></td>
+     
+     <td><p><%=folders[i].name%></p></td>
+     <td><p><%=folders[i].describe%></p></td>
+     <td><p><%=folders[i].created%></p></td>
 
+     
+
+     <td>
+        <a href="/folders/<%=folders[i].name%>"><button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button></a>
+        <a href="" data-toggle="modal" data-target="#editFolderModal<%=folders[i].name%>"><button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button></a>
+        <a href="/folders/delete/<%=folders[i].name%>" onclick="return confirm('Are you sure you want to delete this item?');"><button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button></a>
+       
+     </td>
+   </tr>
+ 
   <!--edit Fodler Modal -->
 <div class="modal fade" id="editFolderModal<%=folders[i].name%>" role="dialog">
 <div class="modal-dialog">
@@ -89,6 +108,7 @@
 </div>
 
 <%} %>
+</tbody>
 </table></div>
 
 
@@ -103,6 +123,7 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Create Folder</h4>
+        
         </div>
         <div class="modal-body">
           <form action="/folders" method="POST" role="form">
@@ -129,73 +150,15 @@
 </div>
 
 
-
-
-<!--phan trang-->
-<div class="row container">
-  <div class="col-xs-4"></div>
-    <!-- pagination -->
-    <% if(pages > 0) { %> <!-- show pagination if there is pages -->
-      <nav class="mx-auto">
-        <ul class="pagination">
-          <!-- FIRST ITEM -->
-          <% if(current == 1) { %>
-            <li class="page-item disabled">
-              <a class="page-link" href="#">First</a>
-            </li>
-          <% } else { %>
-            <li class="page-item">
-              <a class="page-link" href="/folderspage/1">First</a>
-            </li>
-          <% } %>
-
-          <!-- ITEMS  -->
-          <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
-          <% if(i !== 1) { %>
-            <li class="page-item disabled">
-              <a class="page-link" href="#">...</a>
-            </li>
-          <% } %>
-          <% for(; i <= (Number(current) + 4) && i <= pages; i++) { %>
-            <% if(i == current) { %>
-              <li class="page-item active">
-                <a class="page-link" href="<%= i %>">
-                  <%= i %>
-                </a>
-              </li>
-            <% } else { %>
-              <li class="page-item">
-                <a class="page-link" href="/folderspage/<%= i %>">
-                  <%= i %>
-                </a>
-              </li>
-            <% } %>
-            <% if (i == Number(current) + 4 && i < pages) { %>
-               <li class="page-item disabled">
-                 <a class="page-link" href="#">...</a>
-               </li>
-            <% } %>
-          <% } %>
-
-          <!-- LAST ITEM -->
-          <% if(current == pages) { %>
-            <li class="page-item disabled">
-              <a class="page-link" href="#">
-                Last
-              </a>
-            </li>
-          <% } else { %>
-            <li class="page-item">
-              <a class="page-link" href="/folderspage/<%= pages %>">
-                Last
-              </a>
-            </li>
-          <% } %>
-        </ul>
-      </nav>
-    <% } %>
-  </div>
-
 </div>
+<br><br><br><br><br>
+<footer class="site-footer">
+          <div class="text-center">
+              2019 - HoaTamus
+              <a href="" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
 </body>
 </html>

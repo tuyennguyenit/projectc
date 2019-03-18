@@ -1,6 +1,6 @@
 var express = require('express');
-//var router = express.Router();
-var router = express();
+var router = express.Router();
+//var router = express();
 var path = require('path');
 var User = require.main.require('./models/user');
 var Folder = require.main.require('./models/folder');
@@ -8,7 +8,7 @@ var dbConfig = require.main.require('./db');
 var mongoose = require('mongoose');
 // Connect to DB
 var cookieParser = require('cookie-parser');
-mongoose.connect(dbConfig.url);
+mongoose.connect(dbConfig.url, { useMongoClient: true });
 var session = require('express-session');
 //show images
 //var path = require('path');
@@ -19,7 +19,7 @@ var session = require('express-session');
 router.get('/', function(req, res) {
   console.log("call to index...");
   if(req.session.email==null){
-  res.render('index');
+  res.render('login');
 }else
 {
   Folder.find({email:req.session.email}, function(err, folders) {
@@ -40,7 +40,7 @@ router.get('/', function(req, res) {
 router.get('/signout', function(req, res) {
   console.log("call to index...");
   req.session.destroy();
-  res.render('index');
+  res.render('login');
 });
 
 
@@ -70,53 +70,62 @@ User.findOne({ email: un }, function(err, user) {
   		if (err) throw err;
   			console.log('User created!');
 		});
-		res.render('index',{"message" :"Create User Successfully. Please Login"});
+		res.render('signup',{"message1" :"Create User Successfully. Please "});
   	}
   	else
   	{	console.log("user exists");
-		res.render('index',{"message" :"User already exists."})
+		res.render('signup',{"message2" :"User already exists."})
   	}
   }
 });
 });
 
+//test router=====================================
+router.get('/login',function(req,res){
+  res.render('login')
+})
+router.get('/signup',function(req,res){
+  res.render('signup')
+})
+router.get('/index1',function(req,res){
+  res.render('index1')
+})
 
+
+
+//End router 
 
 
 //Sign In
 router.post('/signin', function(req, res) {
-console.log("call to signin post");
-var un = req.body.email;
-var pwd =req.body.password;
-var exists= User.findOne({ email: un , password:pwd }, function(err, user) {
-  if (err) throw err;
-  else
-  {
-  	if(user==null)
-  	{
-		res.render('index',{"message" :"Login Failed"});
-  	}
-  	else
-  	{	req.session.email=un;
-  		console.log("user exists");
-
-      //tìm kiếm trong folder các folder có email là un
-  		Folder.find({email:un}, function(err, folders) {
-  if (err) throw err;
-
-  // object of all the users
-  console.log(folders);
-  //res.render('folders/1', {folders:folders});
-  //load lại trang 1
-  getLoadFolder(req,res)
- 
-
-});
-		
-  	}
-  }
-});
-});
+  console.log("call to signin post");
+  var un = req.body.email;
+  var pwd =req.body.password;
+  var exists= User.findOne({ email: un , password:pwd }, function(err, user) {
+    if (err) throw err;
+    else
+    {
+      if(user==null)
+      {
+         res.render('login',{"message" :"Login Failed"});    
+      }
+      else
+      {	req.session.email=un;
+        console.log("user exists");
+  
+        Folder.find({email:un}, function(err, folders) {
+    if (err) throw err;
+  
+    // object of all the users
+    console.log(folders);
+    res.render('folders', {folders:folders});
+  });
+      
+      }
+    }
+  });
+  });
+  
 
 //get profile 
 router.get('/profile', function(req, res) {
@@ -215,109 +224,40 @@ router.post('/profile/edit', function(req, res) {
 
 
 
+//Get Folders
+router.get('/folders', function(req, res) {
+	console.log("call to folders.."+req.session.email);
+if(req.session.email!=null){
 
+   Folder.find({email:req.session.email}, function(err, folders) {
+  if (err) throw err;
 
-//Get Folders => phan trang
-// router.get('/folders', function(req, res) {
-// 	console.log("call to folders.."+req.session.email);
-// if(req.session.email!=null){
-
-//    Folder.find({email:req.session.email}, function(err, folders) {
-//   if (err) throw err;
-
-//   // object of all the users
-//   console.log(folders);
-//   res.render('folders', {folders:folders});
-// });
-
-// }
-// else
-// {
-//   res.render('index',{"message" :"Login to continue"});
-// }
-
-
-// });
-
-router.get('/folderspage/:page', (req, res, next) => {
-
-  if(req.session.email!=null){
-  let perPage = 3;
-  let page = req.params.page || 1;
-
-  Folder
-    .find({ email:req.session.email }) // finding all documents
-    .skip((perPage * page) - perPage) // in the first page the value of the skip is 0
-    .limit(perPage) // output just 9 items
-    .exec((err, folder) => {
-      console.log('xxxxxxx'+folder.size)
-      Folder.find({ email:req.session.email }) .count((err, count) => { // count to calculate the number of pages
-        if (err) return next(err);
-        res.render('folders', {
-          folders:folder,
-          current: page,
-          pages: Math.ceil(count / perPage)
-        });
-      });
-    });
-  } else{
-    res.render('index',{"message" :"Login to continue"});
-  }
+  // object of all the users
+  console.log(folders);
+  res.render('folders', {folders:folders});
 });
 
-/// viết 1 hàm để load đc trang dùng chung
-//hàm này load page 1
-function getLoadFolder(req,res) {
-  let perPage = 3;
-  let page =1 || 1;
+}
+else
+{
+  res.render('error',{"message" :"Login to continue"});
+}
+});
 
-  Folder
-    .find({ email:req.session.email }) // finding all documents
-    .skip((perPage * page) - perPage) // in the first page the value of the skip is 0
-    .limit(perPage) // output just 9 items
-    .exec((err, folder) => {
-      console.log('load page:'+folder)
-      Folder.find({ email:req.session.email }).count((err, count) => { // count to calculate the number of pages
-        if (err) return next(err);
-        res.render('folders', {
-          folders:folder,
-          current: page,
-          pages: Math.ceil(count / perPage)
-        });
-      });
-    });
-}
-//function load  => tam thoi giai quyet loi o edit tasks
-function getLoadTasks(req,res){
-  if(req.session.email!=null){
-    console.log("call to load tasks.."+req.params.folderName);
-      
-    Folder.findOne({email:req.session.email, name:req.params.foldername }
-          , function(err, folder) {
-            if (err) throw err;
-  console.log(folder);
-            res.render('tasks', {folder:folder});
-  });
-      }
-       else
-  {
-    res.render('index',{"message" :"Login to continue"});
-  }
-}
+
+
+
+
+
 
 //Create Folders
 router.post('/folders', function(req, res) {
   var name = req.body.folderName;
   var describe= req.body.folderDescribe;
   if(req.session.email!=null){
-Folder.findOne({ name: name }, function(err, folder) {
-  if (err) throw err;
-  else
-  {
-  	if(folder==null)
-  	{
-var email=req.session.email;
-  		var newFolder = Folder({
+
+      var email=req.session.email[0];
+              var newFolder = Folder({
               name:name,
   					  email:email,
   					  created: Date(),
@@ -329,28 +269,19 @@ var email=req.session.email;
 		newFolder.save(function(err) {
   		if (err) {console.log(err); throw err;} 
         console.log('Folder created!!');
-        getLoadFolder(req,res)
-		});
-		  
-  //res.render('folders', {folders:folders});
-  
-
-  	}
-  	else
-  	{	console.log("folder exists");
-		res.render('folders',{"message" :"Folder name already exists."})
-  	}
-  }
-});
+    });
+    
+    //chuyển router
+    res.redirect('/folders')
 }
 else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.render('error',{"message" :"Login to continue"});
 }
 });
 
 //Delete Folder
-router.get('/folders/delete/:folderName?', function(req, res) {
+router.get('/folders/delete/:folderName', function(req, res) {
   console.log("call to tasks.."+req.params.folderName);
   
   if(req.session.email!=null){
@@ -359,17 +290,15 @@ router.get('/folders/delete/:folderName?', function(req, res) {
           console.log("Error in delete"+err);  
     }
     else {
-  
-
-  //res.render('folders', {folders:folders});
-  getLoadFolder(req,res)
+      //chuyển router
+    res.redirect('/folders')
             
     }
-});
+    });
   }
   else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.redirect('error',{"message" :"Login to continue"});
 }
 
 });
@@ -388,18 +317,12 @@ router.get('/folders/edit', function(req, res) {
       if (err) {
           return res.status(500).json(err);
       } else {
-        // Folder.find({email:req.session.email}, function(err, folders) {
-        //   if (err) throw err;
-        
-        //   //res.render('folders', {folders:folders});
-        // });
-        getLoadFolder(req,res)
+       //chuyển router
+        res.redirect('/folders')
       }
   }
 
 );
-
- 
 });
 
 
@@ -417,7 +340,7 @@ console.log(folder);
     }
      else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.render('error',{"message" :"Login to continue"});
 }
 
 });
@@ -441,7 +364,7 @@ res.render('tasks', {folder:folder});
   });}
       else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.render('error',{"message" :"Login to continue"});
 } 
 });
 
@@ -477,7 +400,7 @@ router.post('/tasks/edit/:foldername/:_idtask', function(req, res) {
   }
         else
   {
-    res.render('index',{"message" :"Login to continue"});
+    res.render('error',{"message" :"Login to continue"});
   } 
 });
 
@@ -503,7 +426,7 @@ if(req.session.email!=null){
     }
      else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.render('error',{"message" :"Login to continue"});
 }    
 });
 
@@ -542,7 +465,7 @@ res.render('tasks', {folder:folder});
   });}
       else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.render('error',{"message" :"Login to continue"});
 } 
 });
 
@@ -565,7 +488,7 @@ router.get('/members/delete/:folderName/:id', function(req, res) {
         }
         else
     {
-      res.render('index',{"message" :"Login to continue"});
+      res.render('error',{"message" :"Login to continue"});
     }    
     });
     
