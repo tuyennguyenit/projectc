@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-//var router = express();
+
 var path = require('path');
 var User = require.main.require('./models/user');
 var Folder = require.main.require('./models/folder');
@@ -10,9 +10,7 @@ var mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 mongoose.connect(dbConfig.url, { useMongoClient: true });
 var session = require('express-session');
-//show images
-//var path = require('path');
-//router.use(express.static(path.join(__dirname, 'public')));
+
 
 
 //Home
@@ -80,7 +78,7 @@ User.findOne({ email: un }, function(err, user) {
 });
 });
 
-//test router=====================================
+// router=====================================
 router.get('/login',function(req,res){
   res.render('login')
 })
@@ -142,7 +140,7 @@ if(req.session.email!=null){
 }
 else
 {
-  res.render('index',{"message" :"Login to continue"});
+  res.render('error',{"message" :"Login to continue"});
 }
 });
 
@@ -255,7 +253,7 @@ router.post('/folders', function(req, res) {
   var name = req.body.folderName;
   var describe= req.body.folderDescribe;
   if(req.session.email!=null){
-
+    console.log("call to create folders---------"+req.session.email);
       var email=req.session.email[0];
               var newFolder = Folder({
               name:name,
