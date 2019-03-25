@@ -16,3 +16,6 @@ CRUD a new task in the folder <br>
 Edit avatar profile and upload <br>
 ---------------------
 app online: https://app-projectm.herokuapp.com/
+accout test:<br>
+       username:test@gmail.com <br>
+       pass:1 <br>
