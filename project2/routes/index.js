@@ -47,8 +47,10 @@ router.get('/signout', function(req, res) {
 //Sign Up
 router.post('/signup', function(req, res) {
 console.log("call to signup post");
-var un = req.body.email;
+var un = req.body.email[0];
+//console.log("TCL: un", un)
 var pwd =req.body.password;
+//console.log("TCL: pwd", pwd)
 
 User.findOne({ email: un }, function(err, user) {
   if (err) throw err;
@@ -57,7 +59,7 @@ User.findOne({ email: un }, function(err, user) {
   	if(user==null)
   	{
 
-  		var newUser = User({email:  req.body.email,
+  		var newUser = User({email:  un,
               password: req.body.password,
               name:'1',
               avatar:'1'
@@ -252,13 +254,15 @@ else
 router.post('/folders', function(req, res) {
   var name = req.body.folderName;
   var describe= req.body.folderDescribe;
+  var dateTime = Date()
+  var date = dateTime.split(' ', 4).join(' ');
   if(req.session.email!=null){
     console.log("call to create folders---------"+req.session.email);
       var email=req.session.email[0];
               var newFolder = Folder({
               name:name,
   					  email:email,
-  					  created: Date(),
+  					  created: date,
               tasks: [],
               describe:describe,
               members:[]

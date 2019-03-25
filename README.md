@@ -1,13 +1,18 @@
-# project-2019-Tuyennvhtam
+# app project Manage-TuyenNguyen
 -------------------
-javascript
-nodejs
+language: nodejs(express,...),angularjs
+database: monodb
 --------------------
-install:
+install offline:
 npm install
-run:
-node app.js
-view:
-127.0.0.1/3000
-
-ver1: sign in,sign out,sign up,view folder,view task
+run:node app.js
+view:127.0.0.1/3000
+--------------------
+function:
+=>Project management software included
+Create an account and log in
+CRUD a new folder containing the project
+CRUD a new task in the folder
+Edit avatar profile and upload
+---------------------
+app online: https://app-projectm.herokuapp.com/
