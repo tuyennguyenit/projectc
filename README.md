@@ -1,18 +1,18 @@
-# app project Manage-TuyenNguyen
+# app project Manage-TuyenNguyen <br>
 -------------------
-language: nodejs(express,...),angularjs
-database: monodb
+language: nodejs(express,...),angularjs <br>
+database: monodb <br>
 --------------------
-install offline:
-npm install
-run:node app.js
-view:127.0.0.1/3000
+install offline:<br>
+npm install <br>
+run:node app.js <br>
+view:127.0.0.1/3000 <br>
 --------------------
-function:
-=>Project management software included
-Create an account and log in
-CRUD a new folder containing the project
-CRUD a new task in the folder
-Edit avatar profile and upload
+Function: <br>
+=>Project management software included <br>
+Create an account and log in <br>
+CRUD a new folder containing the project <br>
+CRUD a new task in the folder <br>
+Edit avatar profile and upload <br>
 ---------------------
 app online: https://app-projectm.herokuapp.com/
